@@ -1,0 +1,153 @@
+name: CI/CD avec images Docker et Docker Compose
+
+env:
+  SERVER_PRODUCTION_USER: "root"
+  SERVER_PRODUCTION_IP: "51.77.244.180"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tests_frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+    - name: checkout le code
+      uses: actions/checkout@v4
+
+    - name: installer Node.js
+      uses: actions/setup-node@v3
+      with:
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+
+    - name: installer les dépendances
+      run: npm ci --prefer-offline
+
+    - name: vérifie les vulnérabilités
+      run: npm audit fix
+    - name: vérifie le code
+      run: npm run lint
+
+  tests_backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: node-api
+    steps:
+    - name: checkout le code
+      uses: actions/checkout@v4
+
+    - name: installer Node.js
+      uses: actions/setup-node@v3
+      with:
+        cache: 'npm'
+        cache-dependency-path: node-api/package-lock.json
+
+    - name: installer les dépendances
+      run: npm ci --prefer-offline
+
+    - name: exécute les tests unitaires
+      run: npm run test:ci
+
+    - name: vérifie le code
+      run: npm run lint
+
+    - name: vérifie les vulnérabilités
+      run: |
+        cd node-api
+        npm audit fix
+
+    - name: Upload du rapport de couverture sur Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  build:
+    needs: [tests_frontend, tests_backend]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - path: 'frontend'
+            full_image_name: ghcr.io/${{ github.repository }}/frontend
+          - path: 'node-api'
+            full_image_name: ghcr.io/${{ github.repository }}/node-api
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Mise en place de Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login sur GitHub Package Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Récupération des métadonnées
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.full_image_name }}
+
+      - name: Build et push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ matrix.full_image_name }}:latest
+          context: ./${{ matrix.path }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  e2e:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login sur GitHub Package Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lancement des tests E2E
+        run: docker compose up --exit-code-from cypress --abort-on-container-exit
+      - name: Nettoyage
+        run: docker compose down -v --remove-orphans
+
+
+  deploy-production:
+    needs: ["e2e"]
+    environment: 
+      name: production
+      url: http://${{ env.SERVER_PRODUCTION_IP }}
+    runs-on: ubuntu-latest
+    if: github.ref == 'ref/heads/master'
+    steps:
+    - name: checkout le code
+      uses: actions/checkout@v4
+
+    - name: déployer sur le serveur de production
+      run: |
+        eval $(ssh-agent -s)
+        ssh-add - <<< "${{ secrets.VPS_KEY }}"
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ env.SERVER_PRODUCTION_IP }} >> ~/.ssh/known_hosts
+        scp docker-compose.production.yml ${{ env.SERVER_PRODUCTION_USER }}@${{ env.SERVER_PRODUCTION_IP }}:/root/docker-compose.production.yml
+        ssh ${{ env.SERVER_PRODUCTION_USER }}@${{ env.SERVER_PRODUCTION_IP }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && docker compose -f /root/docker-compose.production.yml up -d --force-recreate"

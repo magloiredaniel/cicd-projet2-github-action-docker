@@ -79,8 +79,8 @@ jobs:
             image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/frontend
             # image_name_hub: danielmedou/github-app/github-app/cicd-projet2-github-action-docker/frontend
           - context_name: ./node-api
-            image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/node-app
-            # image_name_hub: danielmedou/github-app/cicd-projet2-github-action-docker/node-app
+            image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/node-api
+            # image_name_hub: danielmedou/github-app/cicd-projet2-github-action-docker/node-api
     permissions:
       packages: write
     steps:
