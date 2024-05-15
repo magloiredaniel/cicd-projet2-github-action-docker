@@ -26,6 +26,10 @@ jobs:
         run: npm run lint
       - name: vérification (check) des vulnérabilités des dépendances
         run: npm audit fix
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   tests-backend:
     runs-on: ubuntu-latest
