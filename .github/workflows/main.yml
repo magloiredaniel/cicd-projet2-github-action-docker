@@ -25,7 +25,6 @@ jobs:
       - name: vérification du code avec Lint
         run: npm run lint
       - name: vérification (check) des vulnérabilités des dépendances
-#run: npm audit fix
         run: npm audit --audit-level=moderate
 
   tests-backend:
@@ -46,7 +45,6 @@ jobs:
       - name: vérification du code avec Lint
         run: npm run lint
       - name: vérification (check) des vulnérabilités des dépendances
-#run: npm audit fix
         run: npm audit --audit-level=moderate
       - name: exécution des tests unitaires
         run: npm run test:ci
