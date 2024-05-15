@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check build-only",
+    "build": "VITE_COVERAGE='false' run-p type-check build-only",
+    "build:e2e": "run-p type-check build-only",
     "preview": "vite preview --host",
     "test:unit": "vitest",
     "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
@@ -22,7 +23,7 @@
     "zod": "^3.23.5"
   },
   "devDependencies": {
-    "@cypress/code-coverage": "^3.12.38",
+    "@cypress/code-coverage": "^3.12.39",
     "@rushstack/eslint-patch": "^1.10.2",
     "@tsconfig/node18": "^18.2.4",
     "@types/jsdom": "^21.1.6",
