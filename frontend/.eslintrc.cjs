@@ -16,6 +16,6 @@ module.exports = {
     }
   ],
   parserOptions: {
-    ecmaVersion: 'latest', // Allows for the parsing of modern ECMAScript features
+    ecmaVersion: 'latest'
   }
 }
