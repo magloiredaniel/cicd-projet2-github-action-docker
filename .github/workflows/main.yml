@@ -25,7 +25,7 @@ jobs:
       - name: vérification du code avec Lint
         run: npm run lint
       - name: vérification (check) des vulnérabilités des dépendances
-        run: npm audit --audit-level=moderate
+        run: npm audit fix
 
   tests-backend:
     runs-on: ubuntu-latest
@@ -45,7 +45,7 @@ jobs:
       - name: vérification du code avec Lint
         run: npm run lint
       - name: vérification (check) des vulnérabilités des dépendances
-        run: npm audit --audit-level=moderate
+        run: npm audit fix
       - name: exécution des tests unitaires
         run: npm run test:ci
       - name: Upload coverage reports to Codecov
