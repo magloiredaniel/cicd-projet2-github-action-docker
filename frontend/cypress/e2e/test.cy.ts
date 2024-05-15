@@ -1,12 +1,4 @@
 describe('Vue 3 App', () => {
-  before(() => {
-    cy.request({
-      url: 'http://frontend',
-      retryOnStatusCodeFailure: true,
-      retryOnNetworkFailure: true
-    });
-  });
-
   beforeEach(() => {
     cy.visit('/');
   });
