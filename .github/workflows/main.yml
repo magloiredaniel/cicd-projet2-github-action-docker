@@ -35,7 +35,7 @@ jobs:
         with:
           context: ./node-api
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/magloiredaniel/cicd-projet2-github-action-docker/node-api:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/node-api:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -84,7 +84,7 @@ jobs:
         with:
           context: ./node-api
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/magloiredaniel/cicd-projet2-github-action-docker/node-api:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/node-api:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -113,10 +113,10 @@ jobs:
   #       include:
   #         - context: ./frontend
   #           image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/frontend
-  #           image_name_hub: ${{ secrets.DOCKERHUB_USERNAME }}/magloiredaniel/cicd-projet2-github-action-docker/frontend
+  #           image_name_hub: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/frontend
   #         - context: ./node-api
   #           image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/node-ap
-  #           image_name_hub: ${{ secrets.DOCKERHUB_USERNAME }}/magloiredaniel/cicd-projet2-github-action-docker/node-ap
+  #           image_name_hub: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/node-ap
   #   permissions:
   #     packages: write
   #   steps:
@@ -140,7 +140,7 @@ jobs:
   #       with:
   #         context: ./node-api
   #         push: true
-  #         tags: ${{ secrets.DOCKERHUB_USERNAME }}/magloiredaniel/cicd-projet2-github-action-docker/node-api:latest
+  #         tags: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/node-api:latest
   #         cache-from: type=gha
   #         cache-to: type=gha,mode=max
 
