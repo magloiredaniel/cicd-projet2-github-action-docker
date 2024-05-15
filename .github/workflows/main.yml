@@ -62,9 +62,7 @@ jobs:
       run: npm run lint
 
     - name: vérifie les vulnérabilités
-      run: |
-        cd node-api
-        npm audit fix
+      run: npm audit fix
 
     - name: Upload du rapport de couverture sur Codecov
       uses: codecov/codecov-action@v3
