@@ -35,7 +35,7 @@ jobs:
         with:
           context: ./node-api
           push: true
-          tags: danielmedou/github-app/cicd-projet2-github-action-docker/frontend:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/frontend:latest
           secrets: |
             GIT_AUTH_TOKEN=${{ secrets.MYTOKEN }}
           cache-from: type=gha
@@ -86,7 +86,7 @@ jobs:
         with:
           context: ./node-api
           push: true
-          tags: danielmedou/github-app/cicd-projet2-github-action-docker/node-api:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/node-api:latest
           secrets: |
             GIT_AUTH_TOKEN=${{ secrets.MYTOKEN }}
           cache-from: type=gha
