@@ -77,10 +77,10 @@ jobs:
         include:
           - context_name: ./frontend
             image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/frontend
-            image_name_hub: danielmedou/github-app/github-app/cicd-projet2-github-action-docker/frontend
+            # image_name_hub: danielmedou/github-app/github-app/cicd-projet2-github-action-docker/frontend
           - context_name: ./node-api
             image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/node-app
-            image_name_hub: danielmedou/github-app/cicd-projet2-github-action-docker/node-ap
+            # image_name_hub: danielmedou/github-app/cicd-projet2-github-action-docker/node-app
     permissions:
       packages: write
     steps:
@@ -99,11 +99,11 @@ jobs:
         with:
           images: ${{ matrix.image_name_ghcr }}
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # - name: Login to Docker Hub
+      #   uses: docker/login-action@v3
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # - name: Build and push Docker Hub
       #   uses: docker/build-push-action@v5
@@ -133,9 +133,9 @@ jobs:
   e2e:
     needs: [build-frontend-and-node-api]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        browser: ["chrome", "edge", "firefox"]
+    # strategy:
+    #   matrix:
+    #     browser: ["chrome", "edge", "firefox"]
     steps:
       - name: checkout code
         uses: actions/checkout@v4
@@ -154,15 +154,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: lancement des tests e2e
-        run: |
-          docker compose up --exit-code-from cypress --abort-on-container-exit
+        run: docker compose up --exit-code-from cypress --abort-on-container-exit
 
       - name: Nettoyage (clean) des containers qui tournent pour rien
-        run: |
-          docker compose down -v --remove-orphans
+        run: docker compose down -v --remove-orphans
 
-      - name: Upload coverage reports to Codecov
-        if: matrix.browser == 'chrome'
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+      # - name: Upload coverage reports to Codecov
+      #   if: matrix.browser == 'chrome'
+      #   uses: codecov/codecov-action@v4.0.1
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
