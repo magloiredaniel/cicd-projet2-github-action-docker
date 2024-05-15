@@ -66,10 +66,10 @@ jobs:
         include:
           - context_name: ./frontend
             image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/frontend
-            # image_name_hub: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/frontend
+            image_name_hub: danielmedou/github-app/github-app/cicd-projet2-github-action-docker/frontend
           - context_name: ./node-api
             image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/node-app
-            # image_name_hub: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/node-ap
+            image_name_hub: danielmedou/github-app/cicd-projet2-github-action-docker/node-ap
     permissions:
       packages: write
     steps:
@@ -94,14 +94,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # - name: Build and push Docker Hub
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: ${{ matrix.context_name }}
-      #     push: true
-      #     tags: ${{ matrix.image_name_hub }}:latest
-      #     cache-from: type=gha
-      #     cache-to: type=gha,mode=max
+      - name: Build and push Docker Hub
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context_name }}
+          push: true
+          tags: ${{ matrix.image_name_hub }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -118,3 +118,36 @@ jobs:
           tags: ${{ matrix.image_name_ghcr }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  e2e:
+    needs: [build-frontend-and-node-api]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: lancement des tests e2e
+        run: |
+          docker compose up --exit-code-from cypress --abord-on-container-exit
+
+      - name: Nettoyage (clean) des containers qui tournent pour rien
+        run: |
+          docker compose down -v --remove-orphans
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

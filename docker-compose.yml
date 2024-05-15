@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  node-api:
+    image: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/node-app:latest
+  frontend:
+    image: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/node-app:latest
+  cypress:
+    image: cypress:included
+    working_dir: /e2e
+    volumes:
+      - ./frontend:e2e
+    entrypoint: cypress run --config baseUrl=http://frontend --headless --browser chrome -C cypress.config.js
+    depends_on:
+      - frontend
+      - node-api
