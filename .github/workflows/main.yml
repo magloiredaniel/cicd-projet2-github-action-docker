@@ -35,7 +35,9 @@ jobs:
         with:
           context: ./node-api
           push: true
-          tags: danielmedou/github-app/cicd-projet2-github-action-docker/node-api:latest
+          tags: danielmedou/github-app/cicd-projet2-github-action-docker/frontend:latest
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.MYTOKEN }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -85,8 +87,11 @@ jobs:
           context: ./node-api
           push: true
           tags: danielmedou/github-app/cicd-projet2-github-action-docker/node-api:latest
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.MYTOKEN }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
