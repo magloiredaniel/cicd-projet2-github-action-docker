@@ -19,6 +19,5 @@ module.exports = {
     parser: '@babel/eslint-parser',
     requireConfigFile: false, // <== ADD THIS
     ecmaVersion: 'latest', // Allows for the parsing of modern ECMAScript features
-    sourceType: 'module' // Allows for the use of imports
   }
 }
