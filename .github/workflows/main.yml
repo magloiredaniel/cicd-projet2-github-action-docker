@@ -7,7 +7,57 @@ concurrency:
   cancel-in-progress: true
 
 jobs: 
+  tests-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run: 
+        working-directory: ./frontend
+    steps:
+      - name: checkout le code
+        uses: actions/checkout@v4
+      - name: installer node.js et configuration du cache
+        uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          cache-dependency-path: ./frontend/package-lock.json
+      - name: installer les dépendences
+        run: npm ci --prefer-offline 
+      - name: vérification du code avec Lint
+        run: npm run lint
+      - name: vérification (check) des vulnérabilités des dépendances
+#        run: npm audit fix
+        run: npm audit --audit-level=moderate
+
+  tests-backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run: 
+        working-directory: ./node-api
+    steps:
+      - name: checkout le code
+        uses: actions/checkout@v4
+      - name: installer node.js et configuration du cache
+        uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          cache-dependency-path: ./node-api/package-lock.json
+      - name: installer les dépendences
+        run: npm ci --prefer-offline 
+      - name: vérification du code avec Lint
+        run: npm run lint
+      - name: vérification (check) des vulnérabilités des dépendances
+#        run: npm audit fix
+        run: npm audit --audit-level=moderate
+      - name: exécution des tests unitaires
+        run: npm run test:ci
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+
   build-frontend-and-node-api:
+    needs: [tests-frontend, tests-backend]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -16,7 +66,7 @@ jobs:
             image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/frontend
             # image_name_hub: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/frontend
           - context_name: ./node-api
-            image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/node-ap
+            image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/node-app
             # image_name_hub: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/node-ap
     permissions:
       packages: write

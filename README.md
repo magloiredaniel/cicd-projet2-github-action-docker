@@ -180,7 +180,7 @@ jobs:
   #         - context_name: ./frontend
   #           image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/frontend
   #           image_name_hub: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/frontend
-  #         - context: ./node-api
+  #         - context_name: ./node-api
   #           image_name_ghcr: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/node-ap
   #           image_name_hub: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/node-ap
   #   permissions:
@@ -210,7 +210,7 @@ jobs:
   #     - name: Build and push Docker Hub
   #       uses: docker/build-push-action@v5
   #       with:
-  #         context: ${{ matrix.context_mane }}
+  #         context: ${{ matrix.context_name }}
   #         push: true
   #         tags: ${{ matrix.image_name_ghcr }}:latest
   #         cache-from: type=gha
