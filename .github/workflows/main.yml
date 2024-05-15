@@ -155,7 +155,7 @@ jobs:
 
       - name: lancement des tests e2e
         run: |
-          docker compose up --exit-code-from cypress --abord-on-container-exit
+          docker compose up --exit-code-from cypress --abort-on-container-exit
 
       - name: Nettoyage (clean) des containers qui tournent pour rien
         run: |
