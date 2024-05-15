@@ -15,17 +15,22 @@ jobs:
     steps:
       - name: checkout le code
         uses: actions/checkout@v4
+
       - name: installer node.js et configuration du cache
         uses: actions/setup-node@v4
         with:
           cache: "npm"
           cache-dependency-path: ./frontend/package-lock.json
+
       - name: installer les dépendences
         run: npm ci --prefer-offline 
+
       - name: vérification du code avec Lint
         run: npm run lint
+
       - name: vérification (check) des vulnérabilités des dépendances
         run: npm audit fix
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
@@ -39,19 +44,25 @@ jobs:
     steps:
       - name: checkout le code
         uses: actions/checkout@v4
+
       - name: installer node.js et configuration du cache
         uses: actions/setup-node@v4
         with:
           cache: "npm"
           cache-dependency-path: ./node-api/package-lock.json
+
       - name: installer les dépendences
         run: npm ci --prefer-offline 
+
       - name: vérification du code avec Lint
         run: npm run lint
+
       - name: vérification (check) des vulnérabilités des dépendances
         run: npm audit fix
+
       - name: exécution des tests unitaires
         run: npm run test:ci
+        
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
