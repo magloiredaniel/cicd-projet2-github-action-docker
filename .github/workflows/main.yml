@@ -35,7 +35,7 @@ jobs:
         with:
           context: ./node-api
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/node-api:latest
+          tags: /github-app/cicd-projet2-github-action-docker/node-api:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -84,7 +84,7 @@ jobs:
         with:
           context: ./node-api
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/github-app/cicd-projet2-github-action-docker/node-api:latest
+          tags: /github-app/cicd-projet2-github-action-docker/node-api:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
