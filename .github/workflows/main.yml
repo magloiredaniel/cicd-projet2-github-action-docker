@@ -4,6 +4,8 @@ on: push
 jobs:
   build-frontend:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - name: checkout code
         uses: actions/checkout@v4
