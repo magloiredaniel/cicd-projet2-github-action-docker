@@ -115,6 +115,9 @@ jobs:
   e2e:
     needs: [build]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: ["chrome", "edge", "firefox"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -129,7 +132,7 @@ jobs:
       - name: Lancement des tests E2E
         run: docker compose up --exit-code-from cypress --abort-on-container-exit
       - name: Nettoyage
-        run: docker compose down -v --remove-orphans
+        run: docker compose down -v --remove-orphans --rmi all
 
   deploy-staging:
     needs: ["e2e"]
