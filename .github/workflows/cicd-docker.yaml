@@ -111,6 +111,14 @@ jobs:
           context: ./${{ matrix.path }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      
+      - name: upload (charger) build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: |
+            ./frontend/dist
+            ./node-api
 
   e2e:
     needs: [build]
