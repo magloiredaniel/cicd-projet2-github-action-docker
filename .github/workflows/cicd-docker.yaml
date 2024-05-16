@@ -1,7 +1,8 @@
 name: CI/CD avec images Docker et Docker Compose
 
 env:
-  SERVER_USER: "root"
+  SERVER_PRODUCTION_USER: "root"
+  SERVER_STADING_USER: "root"
   SERVER_STAGING_IP: "51.77.244.180"
   SERVER_PRODUCTION_IP: "51.77.244.180"
 
@@ -13,7 +14,7 @@ concurrency:
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   tests_frontend: 
