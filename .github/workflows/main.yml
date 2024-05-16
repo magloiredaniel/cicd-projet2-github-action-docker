@@ -132,11 +132,6 @@ jobs:
       - name: Nettoyage
         run: docker compose down -v --remove-orphans
 
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-
   deploy-staging:
     needs: ["e2e"]
     environment: 
