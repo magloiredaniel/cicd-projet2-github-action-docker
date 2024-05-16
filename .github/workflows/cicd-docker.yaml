@@ -143,6 +143,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: staging
+      url: http://${{ env.SERVER_STAGING_IP }}
     steps:
     - name: checkout le code
       uses: actions/checkout@v4
@@ -159,6 +160,7 @@ jobs:
     needs: [e2e]
     environment:
       name: production
+      url: http://${{ env.SERVER_PRODUCTION_IP }}
     steps:
     - name: checkout le code
       uses: actions/checkout@v4
