@@ -2,7 +2,7 @@ name: CI/CD avec images Docker et Docker Compose
 
 env:
   SERVER_USER: "root"
-#  SERVER_STAGING: "51.77.244.180"
+  SERVER_STAGING: "51.77.244.180"
   SERVER_PRODUCTION: "51.77.244.180"
 
 
@@ -137,30 +137,30 @@ jobs:
       - name: Nettoyage
         run: docker compose down -v --remove-orphans
 
-  # deploy_staging:
-  #   needs: [e2e]
-  #   runs-on: ubuntu-latest
-  #   environment:
-  #     name: staging
-  #   steps:
-  #   - name: checkout le code
-  #     uses: actions/checkout@v4
-  #   - name: déployer
-  #     uses: ./.github/actions/deploy
-  #     with:
-  #       server_ip: ${{ env.SERVER_STAGING }}
-  #       secret_key: ${{ secrets.VPS_KEY_STAGING }}
-  #       token_github: ${{ secrets.GITHUB_TOKEN }}
+  deploy_staging:
+    needs: [e2e]
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    steps:
+    - name: checkout le code
+      uses: actions/checkout@v4
+    - name: déployer sur le server de staging
+      uses: ./.github/actions/deploy
+      with:
+        server_ip: ${{ env.SERVER_STAGING }}
+        secret_key: ${{ secrets.VPS_KEY }}
+        token_github: ${{ secrets.GITHUB_TOKEN }}
   
   deploy_production:
     runs-on: ubuntu-latest
-    # needs: deploy_staging
+    needs: [deploy_staging]
     environment:
       name: production
     steps:
     - name: checkout le code
       uses: actions/checkout@v4
-    - name: déployer
+    - name: déployer sur le server de production
       uses: ./.github/actions/deploy
       with:
         server_ip: ${{ env.SERVER_PRODUCTION }}

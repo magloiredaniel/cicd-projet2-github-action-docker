@@ -3,7 +3,7 @@ version: '3.9'
 services:
   node-api:
     image: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/node-api:latest
-    pull_policy: always
+    pull_policy: always # Quand le docker-compose est relancé, il va essayer de pull la dernière image
     environment:
       - NODE_ENV=production
     deploy:

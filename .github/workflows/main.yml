@@ -3,6 +3,7 @@ name: CI/CD avec images Docker et Docker Compose
 env:
   SERVER_PRODUCTION_USER: "root"
   SERVER_PRODUCTION_IP: "51.77.244.180"
+  SERVER_STAGING_IP: "51.77.244.180"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -129,9 +130,28 @@ jobs:
       - name: Nettoyage
         run: docker compose down -v --remove-orphans
 
+  deploy-staging:
+    needs: ["e2e"]
+    environment: 
+      name: production
+      url: http://${{ env.SERVER_STAGING_IP }}
+    runs-on: ubuntu-latest
+    if: github.ref == 'ref/heads/master'
+    steps:
+    - name: checkout le code
+      uses: actions/checkout@v4
+
+    - name: déployer sur le serveur de production
+      run: |
+        eval $(ssh-agent -s)
+        ssh-add - <<< "${{ secrets.VPS_KEY }}"
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ env.SERVER_STAGING_IP }} >> ~/.ssh/known_hosts
+        scp docker-compose.production.yml ${{ env.SERVER_PRODUCTION_USER }}@${{ env.SERVER_STAGING_IP }}:/root/docker-compose.prod.yml
+        ssh ${{ env.SERVER_PRODUCTION_USER }}@${{ env.SERVER_STAGING_IP }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
 
   deploy-production:
-    needs: ["e2e"]
+    needs: ["deploy-staging"]
     environment: 
       name: production
       url: http://${{ env.SERVER_PRODUCTION_IP }}
