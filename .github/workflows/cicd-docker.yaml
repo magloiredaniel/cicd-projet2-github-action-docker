@@ -157,6 +157,7 @@ jobs:
   
   deploy_production:
     runs-on: ubuntu-latest
+    if: github.ref == 'ref/heads/master'
     needs: [e2e]
     environment:
       name: production
