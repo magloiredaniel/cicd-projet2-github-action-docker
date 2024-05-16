@@ -137,7 +137,6 @@ jobs:
       name: production
       url: http://${{ env.SERVER_STAGING_IP }}
     runs-on: ubuntu-latest
-    if: github.ref == 'ref/heads/master'
     steps:
     - name: checkout le code
       uses: actions/checkout@v4
