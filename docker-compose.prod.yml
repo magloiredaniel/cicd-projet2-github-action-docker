@@ -18,6 +18,6 @@ services:
     image: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/frontend:latest
     pull_policy: always
     ports:
-      - target: 80
+      - target: 8081
         published: 80
     restart: always

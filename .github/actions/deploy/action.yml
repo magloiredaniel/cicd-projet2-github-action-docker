@@ -34,5 +34,5 @@ runs:
         ssh-add - <<< "${{ inputs.vps_key }}"
         mkdir -p ~/.ssh
         ssh-keyscan -H ${{ inputs.server_ip }} >> ~/.ssh/known_hosts
-        scp docker-compose.production.yml ${{ inputs.user_vps }}@${{ inputs.server_ip }}:/root/docker-compose.production.yml
-        ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ inputs.token_github }} && docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
+        scp docker-compose.prod.yml ${{ inputs.user_vps }}@${{ inputs.server_ip }}:/root/docker-compose.prod.yml
+        ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ inputs.token_github }} && docker compose -f /root/docker-compose.prod.yml up -d --force-recreate"
