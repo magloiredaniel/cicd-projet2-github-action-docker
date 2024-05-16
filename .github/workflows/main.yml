@@ -152,7 +152,7 @@ jobs:
         ssh ${{ env.SERVER_STAGING_USER }}@${{ env.SERVER_STAGING_IP }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
 
   deploy-production:
-    needs: ["deploy-staging"]
+    needs: ["e2e"]
     environment: 
       name: production
       url: http://${{ env.SERVER_PRODUCTION_IP }}
