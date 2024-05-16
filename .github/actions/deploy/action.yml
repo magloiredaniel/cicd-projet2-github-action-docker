@@ -11,7 +11,7 @@ inputs:
     description: 'user for connexion sur notre VPS'
     default: root
   vps_key:
-    description: 'Clé secrète pour l authentification SSH
+    description: 'Clé secrète pour l authentification SSH'
     required: true
 runs:
   using: 'composite'
