@@ -117,7 +117,7 @@ jobs:
         with:
           name: build
           path: |
-            ./frontend/dist
+            ./frontend
             ./node-api
 
   e2e:
