@@ -13,7 +13,7 @@ concurrency:
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   tests_frontend:
