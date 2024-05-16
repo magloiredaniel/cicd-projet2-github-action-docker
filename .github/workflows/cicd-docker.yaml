@@ -14,7 +14,7 @@ concurrency:
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   tests_frontend: 
@@ -152,7 +152,7 @@ jobs:
     - name: déployer sur le server de staging
       uses: ./.github/actions/deploy
       with:
-        server_ip: ${{ env.SERVER_STAGING_IP }}
+        server_stag_ip: ${{ env.SERVER_STAGING_IP }}
         vps_key: ${{ secrets.VPS_KEY }}
         token_github: ${{ secrets.GITHUB_TOKEN }}
   
@@ -170,6 +170,6 @@ jobs:
     - name: déployer sur le server de production
       uses: ./.github/actions/deploy
       with:
-        server_ip: ${{ env.SERVER_PRODUCTION_IP }}
-        vps_key: ${{ secrets.VPS_KEY }}
+        server_prod_ip: ${{ env.SERVER_PRODUCTION_IP }}
+        vps_prod_key: ${{ secrets.VPS_PROD_KEY }}
         token_github: ${{ secrets.GITHUB_TOKEN }}

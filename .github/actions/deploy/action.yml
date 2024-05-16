@@ -4,14 +4,20 @@ inputs:
   token_github:
     description: 'Clé ssh pour notre server VPS'
     required: true
-  server_ip:
+  server_stag_ip:
+    description: 'Adresse IP de notre serveur cible VPS'
+    required: true
+  server_prod_ip:
     description: 'Adresse IP de notre serveur cible VPS'
     required: true
   user_vps:
     description: 'user for connexion sur notre VPS'
     default: root
   vps_key:
-    description: 'Clé secrète pour l authentification SSH'
+    description: 'Clé secrète pour l authentification SSH du server de staging'
+    required: true
+  vps_prod_key:
+    description: 'Clé secrète pour l authentification SSH du server de production'
     required: true
 runs:
   using: 'composite'
