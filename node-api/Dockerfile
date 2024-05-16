@@ -3,6 +3,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install --omit=dev
 COPY . .
-ENV PORT=80
-EXPOSE 80
+ENV PORT=81
+EXPOSE 81
 CMD [ "node", "index.js" ]

@@ -1,4 +1,5 @@
-![Statut](https://github.com/magloiredaniel/cicd-projet2-github-action-docker/actions/workflows/cicd.yaml/badge.svg)
+![Statut](https://github.com/magloiredaniel/cicd-projet2-github-action-docker/actions/workflows/cicd-docker.yaml/badge.svg)
+![statut](https://github.com/magloiredaniel/cicd-projet2-github-action-docker/actions/workflows/cicd-docker.yml/badge.svg?event=push&branch=master)
 
 [![codecov](https://codecov.io/gh/magloiredaniel/cicd-projet2-github-action-docker/graph/badge.svg?token=LQISWTKNK0)](https://codecov.io/gh/dymacicd/cicd-projet1)
 
