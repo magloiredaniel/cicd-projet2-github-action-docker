@@ -7,7 +7,7 @@ services:
   frontend:
     image: ghcr.io/magloiredaniel/cicd-projet2-github-action-docker/frontend:latest
     ports:
-      - '8084:80'
+      - '80:80'
   cypress:
     image: cypress/included
     working_dir: /e2e
