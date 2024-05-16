@@ -134,7 +134,7 @@ jobs:
   deploy-staging:
     needs: ["e2e"]
     environment: 
-      name: production
+      name: staging
       url: http://${{ env.SERVER_STAGING_IP }}
     runs-on: ubuntu-latest
     steps:
