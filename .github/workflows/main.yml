@@ -131,8 +131,24 @@ jobs:
 
       - name: Lancement des tests E2E
         run: docker compose up --exit-code-from cypress --abort-on-container-exit
+      
+      - name: exécution de cypress
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./client
+          browser: ${{ matrix.browser }}
+          start: npm run preview
+          wait-on: http://localhost:4173
+          wait-on-timeout: 60
+          config: bassUrl=http://localhost:4173
       - name: Nettoyage
         run: docker compose down -v --remove-orphans --rmi all
+
+      - name: Upload coverage reports to Codecov
+        if: matrix.browser == 'chrome'
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   deploy-staging:
     needs: ["e2e"]
