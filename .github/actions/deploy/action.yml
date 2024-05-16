@@ -14,10 +14,7 @@ inputs:
     description: 'user for connexion sur notre VPS'
     default: root
   vps_key:
-    description: 'Clé secrète pour l authentification SSH du server de staging'
-    required: true
-  vps_prod_key:
-    description: 'Clé secrète pour l authentification SSH du server de production'
+    description: 'Clé secrète pour l authentification SSH du server de staging et production'
     required: true
 runs:
   using: 'composite'

@@ -150,6 +150,7 @@ jobs:
         server_stag_ip: ${{ env.SERVER_STAGING_IP }}
         vps_key: ${{ secrets.VPS_KEY }}
         token_github: ${{ secrets.GITHUB_TOKEN }}
+        user_vps: ${{ env.SERVER_STADING_USER }}
   
   deploy_production:
     runs-on: ubuntu-latest
@@ -166,5 +167,6 @@ jobs:
       uses: ./.github/actions/deploy
       with:
         server_prod_ip: ${{ env.SERVER_PRODUCTION_IP }}
-        vps_prod_key: ${{ secrets.VPS_PROD_KEY }}
+        vps_key: ${{ secrets.VPS_KEY }}
         token_github: ${{ secrets.GITHUB_TOKEN }}
+        user_vps: ${{ env.SERVER_PRODUCTION_USER }}
