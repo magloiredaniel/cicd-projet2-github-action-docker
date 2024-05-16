@@ -2,8 +2,8 @@ name: CI/CD avec images Docker et Docker Compose
 
 env:
   SERVER_USER: "root"
-  SERVER_STAGING: "51.77.244.180"
-  SERVER_PRODUCTION: "51.77.244.180"
+  SERVER_STAGING_IP: "51.77.244.180"
+  SERVER_PRODUCTION_IP: "51.77.244.180"
 
 
 concurrency: 
@@ -13,7 +13,7 @@ concurrency:
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   tests_frontend: 
@@ -39,6 +39,11 @@ jobs:
     - name: vérifie le code
       run: npm run lint
 
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+
   tests_backend:
     runs-on: ubuntu-latest
     defaults:
@@ -57,7 +62,7 @@ jobs:
     - name: installer les dépendances
       run: npm ci --prefer-offline
           
-    - name: exécute les tests
+    - name: exécute les tests unitaires
       run: npm run test:ci
           
     - name: vérifie le code
@@ -111,12 +116,7 @@ jobs:
           context: ./${{ matrix.path }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      
-      # - name: upload (charger) build artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: build
-      #     path: ./node-api
+
 
   e2e:
     needs: [build]
@@ -146,11 +146,12 @@ jobs:
     steps:
     - name: checkout le code
       uses: actions/checkout@v4
+
     - name: déployer sur le server de staging
       uses: ./.github/actions/deploy
       with:
-        server_ip: ${{ env.SERVER_STAGING }}
-        secret_key: ${{ secrets.VPS_KEY }}
+        server_ip: ${{ env.SERVER_STAGING_IP }}
+        vps_key: ${{ secrets.VPS_KEY }}
         token_github: ${{ secrets.GITHUB_TOKEN }}
   
   deploy_production:
@@ -161,9 +162,10 @@ jobs:
     steps:
     - name: checkout le code
       uses: actions/checkout@v4
+
     - name: déployer sur le server de production
       uses: ./.github/actions/deploy
       with:
-        server_ip: ${{ env.SERVER_PRODUCTION }}
-        secret_key: ${{ secrets.VPS_KEY }}
+        server_ip: ${{ env.SERVER_PRODUCTION_IP }}
+        vps_key: ${{ secrets.VPS_KEY }}
         token_github: ${{ secrets.GITHUB_TOKEN }}

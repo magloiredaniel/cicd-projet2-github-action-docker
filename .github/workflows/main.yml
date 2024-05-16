@@ -13,7 +13,7 @@ concurrency:
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   tests_frontend:
@@ -115,9 +115,6 @@ jobs:
   e2e:
     needs: [build]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        browser: ["chrome", "edge", "firefox"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -136,7 +133,6 @@ jobs:
         run: docker compose down -v --rmi all
 
       - name: Upload coverage reports to Codecov
-        if: matrix.browser == 'chrome'
         uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -172,6 +168,16 @@ jobs:
       uses: actions/checkout@v4
 
     - name: déployer sur le serveur de production
+      run: |
+        eval $(ssh-agent -s)
+        ssh-add - <<< "${{ secrets.VPS_KEY }}"
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ env.SERVER_PRODUCTION_IP }} >> ~/.ssh/known_hosts
+        scp docker-compose.production.yml ${{ env.SERVER_PRODUCTION_USER }}@${{ env.SERVER_PRODUCTION_IP }}:/root/docker-compose.production.yml
+        ssh ${{ env.SERVER_PRODUCTION_USER }}@${{ env.SERVER_PRODUCTION_IP }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
+
+
+    - name:
       run: |
         eval $(ssh-agent -s)
         ssh-add - <<< "${{ secrets.VPS_KEY }}"

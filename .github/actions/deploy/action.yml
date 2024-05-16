@@ -2,23 +2,37 @@ name: 'Déployer sur le serveur cible'
 description: 'Effectue un déploiement sur le serveur cible'
 inputs:
   token_github:
-    description: 'Token GitHub'
+    description: 'Clé ssh pour notre server VPS'
     required: true
   server_ip:
-    description: 'Adresse IP du serveur cible'
+    description: 'Adresse IP de notre serveur cible VPS'
     required: true
-  secret_key:
-    description: 'Clé secrète pour l authentification SSH'
+  user_vps:
+    description: 'user for connexion sur notre VPS'
+    default: root
+  vps_key:
+    description: 'Clé secrète pour l authentification SSH
     required: true
 runs:
   using: 'composite'
   steps:
-    - name: déployer sur le serveur
+    # - name: déployer sur le serveur
+    #   shell: bash
+    #   run: |
+    #     eval $(ssh-agent -s)
+    #     ssh-add - <<< "${{ inputs.vps_key }}"
+    #     mkdir -p ~/.ssh
+    #     ssh-keyscan -H ${{ inputs.server_ip }} >> ~/.ssh/known_hosts
+    #     scp -r docker-compose.prod.yml root@${{ inputs.server_ip }}:/root/docker-compose.prod.yml
+    #     ssh root@${{ inputs.server_ip }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ inputs.token_github }} && docker compose -f /root/docker-compose.prod.yml up -d --force-recreate"
+
+
+    - name: déployer sur le server VPS cible
       shell: bash
       run: |
         eval $(ssh-agent -s)
-        ssh-add - <<< "${{ inputs.secret_key }}"
+        ssh-add - <<< "${{ inputs.vps_key }}"
         mkdir -p ~/.ssh
         ssh-keyscan -H ${{ inputs.server_ip }} >> ~/.ssh/known_hosts
-        scp -r docker-compose.prod.yml root@${{ inputs.server_ip }}:/root/docker-compose.prod.yml
-        ssh root@${{ inputs.server_ip }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ inputs.token_github }} && docker compose -f /root/docker-compose.prod.yml up -d --force-recreate"
+        scp docker-compose.production.yml ${{ inputs.user_vps }}@${{ inputs.server_ip }}:/root/docker-compose.production.yml
+        ssh ${{ inputs.user_vps }}@${{ inputs.server_ip }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ inputs.token_github }} && docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
