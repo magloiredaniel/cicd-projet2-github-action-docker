@@ -2,7 +2,7 @@ name: CI/CD avec images Docker et Docker Compose
 
 env:
   SERVER_USER: "root"
-  SERVER_STAGING: "51.77.244.180"
+#  SERVER_STAGING: "51.77.244.180"
   SERVER_PRODUCTION: "51.77.244.180"
 
 
