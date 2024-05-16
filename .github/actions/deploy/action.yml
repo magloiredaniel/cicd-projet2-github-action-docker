@@ -38,6 +38,7 @@ runs:
       run: |
         eval $(ssh-agent -s)
         ssh-add - <<< "${{ inputs.vps_key }}"
+        ssh-add - <<< "${{ inputs.vps_prod_key }}"
         mkdir -p ~/.ssh
         ssh-keyscan -H ${{ inputs.server_ip }} >> ~/.ssh/known_hosts
         scp docker-compose.prod.yml ${{ inputs.user_vps }}@${{ inputs.server_ip }}:/root/docker-compose.prod.yml
