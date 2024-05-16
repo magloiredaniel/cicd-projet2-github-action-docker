@@ -13,8 +13,8 @@ export default defineConfig({
       extension: ['.js', '.ts', '.vue'],
       forceBuildInstrument: true
     }),
-    
-    vue()],
+    vue()
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -28,4 +28,4 @@ export default defineConfig({
   build: {
     sourcemap: true
   }
-})
+});
