@@ -2,6 +2,7 @@ name: CI/CD avec images Docker et Docker Compose
 
 env:
   SERVER_PRODUCTION_USER: "root"
+  SERVER_STAGING_USER: "root"
   SERVER_PRODUCTION_IP: "51.77.244.180"
   SERVER_STAGING_IP: "51.77.244.180"
 
@@ -12,7 +13,7 @@ concurrency:
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   tests_frontend:
@@ -147,8 +148,8 @@ jobs:
         ssh-add - <<< "${{ secrets.VPS_KEY }}"
         mkdir -p ~/.ssh
         ssh-keyscan -H ${{ env.SERVER_STAGING_IP }} >> ~/.ssh/known_hosts
-        scp docker-compose.production.yml ${{ env.SERVER_PRODUCTION_USER }}@${{ env.SERVER_STAGING_IP }}:/root/docker-compose.prod.yml
-        ssh ${{ env.SERVER_PRODUCTION_USER }}@${{ env.SERVER_STAGING_IP }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
+        scp docker-compose.production.yml ${{ env.SERVER_STAGING_USER }}@${{ env.SERVER_STAGING_IP }}:/root/docker-compose.production.yml
+        ssh ${{ env.SERVER_STAGING_USER }}@${{ env.SERVER_STAGING_IP }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
 
   deploy-production:
     needs: ["deploy-staging"]
