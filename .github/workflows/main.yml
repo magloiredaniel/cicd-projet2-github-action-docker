@@ -51,22 +51,11 @@ jobs:
         scan-ref: '.'
         trivy-config: trivy.yaml
 
-    - name: dependency check
-      uses: dependency-check/Dependency-Check_Action@master
-      id: Depcheck
+        # https://github.com/actions/dependency-review-action
+    - name: 'Dependency Review'
+      uses: actions/dependency-review-action@v4
       with:
-        project: 'test'
-        path: '.'
-        format: 'HTML'
-        out: 'reports' # this is the default, no need to specify unless you wish to override it
-        args: >
-          --failOnCVSS 7
-          --enableRetired
-    - name: Upload Test results
-      uses: actions/upload-artifact@master
-      with:
-        name: Depcheck report
-        path: ${{github.workspace}}/reports
+          fail-on-severity: moderate
 
 
   tests_backend:
@@ -105,6 +94,11 @@ jobs:
         scan-type: 'fs'
         scan-ref: '.'
         trivy-config: trivy.yaml
+
+    - name: 'Dependency Review'
+      uses: actions/dependency-review-action@v4
+      with:
+        fail-on-severity: moderate
 
     - name: Upload du rapport de couverture sur Codecov
       uses: codecov/codecov-action@v4.0.1
