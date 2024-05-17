@@ -94,9 +94,9 @@ jobs:
       matrix:
         include:
           - path: 'frontend'
-            full_image_name: ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
+            full_image_name: ghcr.io/${{ github.repository }}/frontend:latest
           - path: 'node-api'
-            full_image_name: ghcr.io/${{ github.repository }}/node-api:${{ github.sha }}
+            full_image_name: ghcr.io/${{ github.repository }}/node-api:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -121,7 +121,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ matrix.full_image_name }}:'${{ github.sha }}'
+          tags: ${{ matrix.full_image_name }}:latest
           context: ./${{ matrix.path }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -129,7 +129,7 @@ jobs:
       - name: Run Trivy vulnerability scanner to frontend image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}'
+          image-ref: 'ghcr.io/${{ github.repository }}/frontend:latest'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -139,7 +139,7 @@ jobs:
       - name: Run Trivy vulnerability scanner to backend image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ghcr.io/${{ github.repository }}/node-api:${{ github.sha }}'
+          image-ref: 'ghcr.io/${{ github.repository }}/node-api:latest'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
