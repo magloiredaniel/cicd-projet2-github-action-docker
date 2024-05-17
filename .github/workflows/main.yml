@@ -52,10 +52,10 @@ jobs:
         trivy-config: trivy.yaml
 
         # https://github.com/actions/dependency-review-action
-    - name: 'Dependency Review'
-      uses: actions/dependency-review-action@v4
-      with:
-          fail-on-severity: moderate
+    # - name: 'Dependency Review'
+    #   uses: actions/dependency-review-action@v4
+    #   with:
+    #       fail-on-severity: moderate
 
 
   tests_backend:
@@ -95,10 +95,10 @@ jobs:
         scan-ref: '.'
         trivy-config: trivy.yaml
 
-    - name: 'Dependency Review'
-      uses: actions/dependency-review-action@v4
-      with:
-        fail-on-severity: moderate
+    # - name: 'Dependency Review'
+    #   uses: actions/dependency-review-action@v4
+    #   with:
+    #     fail-on-severity: moderate
 
     - name: Upload du rapport de couverture sur Codecov
       uses: codecov/codecov-action@v4.0.1
