@@ -25,6 +25,13 @@ jobs:
     - name: checkout le code
       uses: actions/checkout@v4
 
+    - name: Run Trivy vulnerability scanner in fs mode
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        trivy-config: trivy.yaml
+
     - name: installer Node.js
       uses: actions/setup-node@v4
       with:
@@ -47,6 +54,13 @@ jobs:
     steps:
     - name: checkout le code
       uses: actions/checkout@v4
+
+    - name: Run Trivy vulnerability scanner in fs mode
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        trivy-config: trivy.yaml
 
     - name: installer Node.js
       uses: actions/setup-node@v4
@@ -80,15 +94,35 @@ jobs:
       matrix:
         include:
           - path: 'frontend'
-            full_image_name: ghcr.io/${{ github.repository }}/frontend
+            full_image_name: ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
           - path: 'node-api'
-            full_image_name: ghcr.io/${{ github.repository }}/node-api
+            full_image_name: ghcr.io/${{ github.repository }}/node-api:${{ github.sha }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Mise en place de Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Run Trivy vulnerability scanner to frontend image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Run Trivy vulnerability scanner to backend image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'ghcr.io/${{ github.repository }}/node-api:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
 
       - name: Login sur GitHub Package Registry
         uses: docker/login-action@v3
