@@ -111,6 +111,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Récupération des métadonnées
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.full_image_name }}
+
+      - name: Build et push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ matrix.full_image_name }}:latest
+          context: ./${{ matrix.path }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
       - name: Run Trivy vulnerability scanner to frontend image
         uses: aquasecurity/trivy-action@master
         with:
@@ -130,21 +145,6 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-
-      - name: Récupération des métadonnées
-        id: metadata
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ matrix.full_image_name }}
-
-      - name: Build et push
-        uses: docker/build-push-action@v5
-        with:
-          push: true
-          tags: ${{ matrix.full_image_name }}:latest
-          context: ./${{ matrix.path }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
   e2e:
     needs: [build]
