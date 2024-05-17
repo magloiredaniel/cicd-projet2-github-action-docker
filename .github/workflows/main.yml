@@ -132,24 +132,24 @@ jobs:
       - name: Nettoyage
         run: docker compose down -v --remove-orphans
 
-  # deploy-staging:
-  #   needs: ["e2e"]
-  #   environment: 
-  #     name: staging
-  #     url: http://${{ env.SERVER_STAGING_IP }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: checkout le code
-  #     uses: actions/checkout@v4
+  deploy-staging:
+    needs: ["e2e"]
+    environment: 
+      name: staging
+      url: http://${{ env.SERVER_STAGING_IP }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout le code
+      uses: actions/checkout@v4
 
-  #   - name: déployer sur le serveur de production
-  #     run: |
-  #       eval $(ssh-agent -s)
-  #       ssh-add - <<< "${{ secrets.VPS_KEY }}"
-  #       mkdir -p ~/.ssh
-  #       ssh-keyscan -H ${{ env.SERVER_STAGING_IP }} >> ~/.ssh/known_hosts
-  #       scp docker-compose.production.yml ${{ env.SERVER_STAGING_USER }}@${{ env.SERVER_STAGING_IP }}:/root/docker-compose.production.yml
-  #       ssh ${{ env.SERVER_STAGING_USER }}@${{ env.SERVER_STAGING_IP }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
+    - name: déployer sur le serveur de staging
+      run: |
+        eval $(ssh-agent -s)
+        ssh-add - <<< "${{ secrets.VPS_KEY }}"
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ env.SERVER_STAGING_IP }} >> ~/.ssh/known_hosts
+        scp docker-compose.production.yml ${{ env.SERVER_STAGING_USER }}@${{ env.SERVER_STAGING_IP }}:/root/docker-compose.production.yml
+        ssh ${{ env.SERVER_STAGING_USER }}@${{ env.SERVER_STAGING_IP }} "docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && docker compose -f /root/docker-compose.production.yml up -d --force-recreate"
 
   deploy-production:
     needs: ["e2e"]
