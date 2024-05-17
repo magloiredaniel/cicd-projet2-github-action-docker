@@ -155,6 +155,7 @@ jobs:
       #     ignore-unfixed: true
       #     vuln-type: 'os,library'
       #     severity: 'CRITICAL,HIGH'
+      
 
   e2e:
     needs: [build]
