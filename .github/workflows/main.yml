@@ -125,10 +125,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ matrix.full_image_name }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
+          # tags: |
+          #   type=semver,pattern={{version}}
+          #   type=semver,pattern={{major}}.{{minor}}
+          #   type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
 
       - name: Build et push
         uses: docker/build-push-action@v5
@@ -142,22 +142,22 @@ jobs:
       - name: Run Trivy vulnerability scanner to frontend image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ghcr.io/${{ github.repository }}/frontend'
+          image-ref: '${{ matrix.full_image_name }}:latest'
           format: 'table'
           exit-code: '0'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
-      - name: Run Trivy vulnerability scanner to backend image
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'ghcr.io/${{ github.repository }}/node-api'
-          format: 'table'
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+      # - name: Run Trivy vulnerability scanner to backend image
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: 'ghcr.io/${{ github.repository }}/node-api'
+      #     format: 'table'
+      #     exit-code: '0'
+      #     ignore-unfixed: true
+      #     vuln-type: 'os,library'
+      #     severity: 'CRITICAL,HIGH'
       
 
   e2e:
